@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opitzconsulting.javamagazin</groupId>
+    <artifactId>js-tdd</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Testdriven JavaScript Development</name>
+    <description>Testdriven JavaScript Development</description>
+    <packaging>war</packaging>
+
+
+    <properties>
+        <browser>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</browser>
+    </properties>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>com.google.jstestdriver</groupId>
+                <artifactId>maven-jstestdriver-plugin</artifactId>
+                <version>1.3.2.1</version>
+                <configuration>
+                    <port>42442</port>
+                    <runnerMode>INFO</runnerMode>
+                    <reset>true</reset>
+                    <browser>${browser}</browser>
+                    <testOutput>${project.build.directory}/jstd-reports</testOutput>
+                    <tests>all</tests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>run-unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <config>jstd-unit.conf</config>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-end2end-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <config>jstd-end2end.conf</config>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <!-- Note that there is a bug in newer jetty plugin versions, that do no more allow
+                     to configure multiple source directories -->
+                <version>6.1.26</version>
+                <configuration>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
+                    <stopKey>STOPJETTY</stopKey>
+                    <stopPort>9999</stopPort>
+                    <webAppConfig>
+                        <baseResource implementation="org.mortbay.resource.ResourceCollection">
+                            <resourcesAsCSV>src/main/webapp,src/test/webapp
+                            </resourcesAsCSV>>
+                        </baseResource>
+                    </webAppConfig>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.jstestdriver</groupId>
+            <artifactId>jstestdriver</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>com.googlecode.jstd-maven-plugin</id>
+            <name>JsTestDriver Maven Plugin Repository</name>
+            <url>http://jstd-maven-plugin.googlecode.com/svn/maven2</url>
+        </repository>
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>com.googlecode.jstd-maven-plugin</id>
+            <name>JsTestDriver Maven Plugin Repository</name>
+            <url>http://jstd-maven-plugin.googlecode.com/svn/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
