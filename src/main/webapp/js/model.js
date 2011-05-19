@@ -1,12 +1,10 @@
 /**
  * The Model provides access to the backend.
  * This function returns an object with the public API for the Model.
- * @param XHRConstructor
- * @param json
  */
-function model(XHRConstructor, json) {
+function model() {
     var XHR_COMPLETE_READY_STATE = 4;
-    var CUSTOMER_URL = 'rest/customer';
+    var CUSTOMER_URL = '/js-tdd/rest/customer';
 
     function createXhrOnReadyStateChange(xhr, callback) {
         return function() {
@@ -14,7 +12,7 @@ function model(XHRConstructor, json) {
                 var responseText = xhr.responseText;
                 var jsonResponse = null;
                 if (responseText) {
-                    jsonResponse = json.parse(responseText);
+                    jsonResponse = window.JSON.parse(responseText);
                 }
                 callback(jsonResponse);
             }
@@ -22,33 +20,20 @@ function model(XHRConstructor, json) {
     }
 
     function sendPOSTRequest(url, params, callback) {
-        var xhr = new XHRConstructor();
-        var stringData = json.stringify(params);
+        var xhr = new window.XMLHttpRequest();
+        var stringData = window.JSON.stringify(params);
         xhr.open('POST', url);
         xhr.onreadystatechange = createXhrOnReadyStateChange(xhr, callback);
         xhr.send(stringData);
     }
 
-    function sendGETRequest(url, callback) {
-        var xhr = new XHRConstructor();
-        xhr.open('GET', url);
-        xhr.onreadystatechange = createXhrOnReadyStateChange(xhr, callback);
-        xhr.send();
-    }
-
-    function loadCustomerById(customerId, callback) {
-        sendGETRequest(CUSTOMER_URL+"/"+customerId, callback);
-    }
-
-
     function saveCustomer(customer, callback) {
-        sendPOSTRequest(CUSTOMER_URL+"/-1", customer, callback);
+        sendPOSTRequest(CUSTOMER_URL + "/-1", customer, callback);
     }
 
 
     // return an object for the public API
     return {
-        loadCustomerById: loadCustomerById,
         saveCustomer: saveCustomer
     };
 }

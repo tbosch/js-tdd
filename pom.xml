@@ -36,7 +36,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <config>jstd-unit.conf</config>
+                            <config>${project.basedir}/jstd-unit.conf</config>
                         </configuration>
                     </execution>
                     <execution>
@@ -46,7 +46,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <config>jstd-end2end.conf</config>
+                            <config>${project.basedir}/jstd-end2end.conf</config>
                         </configuration>
                     </execution>
                 </executions>
