@@ -38,6 +38,12 @@ The unit tests resp. end2end tests can be run via the jstd-unit.sh resp jstd-end
 
 The tests may also be run in the jasmine html runner via the url `http://localhost:8080/js-tdd/SpecRunner.html`
 
+
+Maven-Configuration
+-----------
+Please set a valid path for the `browser` property before running `maven install`.
+
+
 Links
 -------------
 

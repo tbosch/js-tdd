@@ -14,21 +14,31 @@ function controller() {
     function init(pmodel, pview) {
         model = pmodel;
         view = pview;
-        validateSyntax();
+        validate();
     }
 
     function fieldValueChanged(fieldId) {
-        validateSyntax();
+        validate();
     }
 
-    function validateSyntax() {
+    function validate() {
         var fields = {};
+        getFieldsAndClearError(fields);
+        validateRequiredFields(fields);
+        validateEmailFields(fields);
+        var error = checkFieldsAndFlushError(fields);
+        view.setFieldState(SAVE_BUTTON, {enabled: !error});
+        return !error;
+    }
+
+    function getFieldsAndClearError(fields) {
         foreachInList(ALL_FIELDS, function(id) {
             fields[id] = view.getFieldState(id);
             fields[id].error = false;
         });
-        validateRequiredFields(fields);
-        validateEmail(fields.email);
+    }
+
+    function checkFieldsAndFlushError(fields) {
         var error = false;
         for (var id in fields) {
             var field = fields[id];
@@ -37,8 +47,7 @@ function controller() {
             }
             view.setFieldState(id, {error: field.error});
         }
-        view.setFieldState(SAVE_BUTTON, {enabled: !error});
-        return !error;
+        return error;
     }
 
     function foreachInList(list, callback) {
@@ -56,7 +65,8 @@ function controller() {
         });
     }
 
-    function validateEmail(field) {
+    function validateEmailFields(fields) {
+        var field = fields.email;
         var value = field.value;
         if (!value || !EMAIL_REGEX.test(value)) {
             field.error = true;
@@ -70,7 +80,7 @@ function controller() {
     }
 
     function save() {
-        if (!validateSyntax()) {
+        if (!validate()) {
             return;
         }
 

@@ -9,6 +9,6 @@
 
     <servlet-mapping>
         <servlet-name>customer.java</servlet-name>
-        <url-pattern>/rest/customer/*</url-pattern>
+        <url-pattern>/rest/customers</url-pattern>
     </servlet-mapping>
 </web-app>

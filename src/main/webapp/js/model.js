@@ -4,7 +4,7 @@
  */
 function model() {
     var XHR_COMPLETE_READY_STATE = 4;
-    var CUSTOMER_URL = '/js-tdd/rest/customer';
+    var CUSTOMER_URL = '/js-tdd/rest/customers';
 
     function createXhrOnReadyStateChange(xhr, callback) {
         return function() {
@@ -28,7 +28,7 @@ function model() {
     }
 
     function saveCustomer(customer, callback) {
-        sendPOSTRequest(CUSTOMER_URL + "/-1", customer, callback);
+        sendPOSTRequest(CUSTOMER_URL, customer, callback);
     }
 
 
