@@ -4,7 +4,13 @@
 (function() {
     var v = view();
     var m = model();
-    var c = controller();
+    var c = controller({
+                name: 'required',
+                surname: 'required',
+                street: '',
+                plz: '',
+                city: '',
+                email:'required email'
+            },v,m);
     v.init(c);
-    c.init(m,v);
 })();

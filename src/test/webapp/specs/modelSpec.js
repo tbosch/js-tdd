@@ -14,7 +14,7 @@ describe("model", function() {
             };
             m.saveCustomer(customer, function(c) {
                 savedCustomer = c;
-            })
+            });
         });
         waitsFor(function() {
             return true && savedCustomer;

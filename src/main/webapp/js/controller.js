@@ -1,103 +1,75 @@
 /**
- * The controller object connects the model with the view
+ * The controller object connects the model with the view.
+ * This function requires an object that specifies the available input fields
+ * and the validation rule that should be applied to those fields, e.g. {name: 'required'}.
+ * As validation rules there are 'required' and 'email'. Multiple rules can also be combined into one string
+ * @param inputFieldsWithValidationRules Map from fieldId to validation rule
+ * @param view The view
+ * @param model The model
  */
-function controller() {
-    var ALL_FIELDS = ['name', 'surname', 'street', 'plz', 'city', 'email'];
-    var REQUIRED_FIELDS = ['name', 'surname', 'email'];
+function controller(inputFieldsWithValidationRules, view, model) {
+    var REQUIRED_RULE = "required";
+    var EMAIL_RULE = "email";
+
     var SAVE_BUTTON = 'save';
     var EMAIL_REGEX = /.+@.+\..+/;
     var STATE_FIELD = 'state';
 
-    var view;
-    var model;
+    validate();
 
-    function init(pmodel, pview) {
-        model = pmodel;
-        view = pview;
-        validate();
-    }
-
-    function fieldValueChanged(fieldId) {
-        validate();
-    }
-
+    /**
+     * Validates all fields according to the validation rule given in the constructor.
+     */
     function validate() {
-        var fields = {};
-        getFieldsAndClearError(fields);
-        validateRequiredFields(fields);
-        validateEmailFields(fields);
-        var error = checkFieldsAndFlushError(fields);
-        view.setFieldState(SAVE_BUTTON, {enabled: !error});
-        return !error;
-    }
-
-    function getFieldsAndClearError(fields) {
-        foreachInList(ALL_FIELDS, function(id) {
-            fields[id] = view.getFieldState(id);
-            fields[id].error = false;
-        });
-    }
-
-    function checkFieldsAndFlushError(fields) {
-        var error = false;
-        for (var id in fields) {
-            var field = fields[id];
-            if (field.error) {
-                error = true;
+        var allValid = true;
+        for (var fieldId in inputFieldsWithValidationRules) {
+            var rule = inputFieldsWithValidationRules[fieldId];
+            if (rule) {
+                var value = view.getFieldState(fieldId).value;
+                var valid = true;
+                if (rule.indexOf(REQUIRED_RULE) != -1) {
+                    valid = valid && validateRequiredValue(value);
+                }
+                if (rule.indexOf(EMAIL_RULE) != -1) {
+                    valid = valid && validateEmailValue(value);
+                }
+                view.setFieldState(fieldId, {error: !valid});
+                allValid = allValid && valid;
             }
-            view.setFieldState(id, {error: field.error});
         }
-        return error;
+        view.setButtonEnabled(SAVE_BUTTON, allValid);
+        return allValid;
     }
 
-    function foreachInList(list, callback) {
-        for (var i = 0; i < list.length; i++) {
-            callback(list[i]);
-        }
+    function validateRequiredValue(value) {
+        return !!value;
     }
 
-    function validateRequiredFields(fields) {
-        foreachInList(REQUIRED_FIELDS, function(id) {
-            var value = fields[id].value;
-            if (!value) {
-                fields[id].error = true;
-            }
-        });
+    function validateEmailValue(value) {
+        return !value || EMAIL_REGEX.test(value);
     }
 
-    function validateEmailFields(fields) {
-        var field = fields.email;
-        var value = field.value;
-        if (!value || !EMAIL_REGEX.test(value)) {
-            field.error = true;
-        }
-    }
-
-    function action(fieldId) {
-        if (fieldId == SAVE_BUTTON) {
-            save();
-        }
-    }
-
+    /**
+     * Gets the current values from the view and saves them in the model.
+     */
     function save() {
         if (!validate()) {
             return;
         }
 
         var customer = {};
-        foreachInList(ALL_FIELDS, function(id) {
-            customer[id] = view.getFieldState(id).value;
-        });
-        view.setFieldState(STATE_FIELD, {value: 'saving...'});
+        for (var fieldId in inputFieldsWithValidationRules) {
+            customer[fieldId] = view.getFieldState(fieldId).value;
+        }
+        view.setFieldState(STATE_FIELD, {value: 'Speichern...'});
         model.saveCustomer(customer, function(customer) {
-            view.setFieldState(STATE_FIELD, {value: 'new id ' + customer.id});
+            view.setFieldState(STATE_FIELD, {value: 'Neuer Kunde mit der Id ' + customer.id});
         });
     }
 
     /** Public API **/
     return {
-        init: init,
-        fieldValueChanged: fieldValueChanged,
-        action: action
+        validate: validate,
+        save: save
     };
 }

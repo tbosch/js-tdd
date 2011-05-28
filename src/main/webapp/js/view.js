@@ -2,76 +2,90 @@
  * The View provides access to the html document
  */
 function view() {
+    var eventListeners = {};
+
+    function addEventListener(eventType, listener) {
+        eventListeners[eventType] = listener;
+        if (document.addEventListener) {
+            document.addEventListener(eventType, listener, false);
+        } else {
+            // IE
+            document.attachEvent('on'+eventType, listener);
+        }
+    }
+
     /**
      * Initializes the view and installs the listener in the document.
      * The given callback needs to have the following functions:
-     * - fieldValueChanged(id, value): Called when a field value is changed
-     * - action(id): Called when a button is clicked
-     * @param callback An object with
+     * - validate: Called when a field value is changed
+     * - {action}: Called when a button with the id {action} is clicked
+     * @param callback
      */
     function init(callback) {
 
-        function changeValueListener(event) {
-            var element = event.target || event.srcElement;
-            if (element) {
-                var id = element.id;
-                callback.fieldValueChanged(id);
-            }
+        function fieldChangeListener(event) {
+            callback.validate();
         }
 
         function actionListener(event) {
             var element = event.target || event.srcElement;
             var id = element.id;
-            callback.action(id);
+            if (element.nodeName=='BUTTON') {
+                callback[id]();
+            }
         }
 
-        if (document.addEventListener) {
-            document.addEventListener('keyup', changeValueListener, false);
-            document.addEventListener('click', actionListener, false);
-        } else {
-            // IE
-            document.attachEvent('onkeyup', changeValueListener);
-            document.attachEvent('onclick', actionListener);
+        addEventListener('keyup', fieldChangeListener);
+        addEventListener('click', actionListener);
+    }
+
+    /**
+     * Unregisters all listeners
+     */
+    function destroy() {
+        for (var eventType in eventListeners) {
+            var listener = eventListeners[eventType];
+            if (document.addEventListener) {
+                document.removeEventListener(eventType, listener, false);
+            } else {
+                // IE
+                document.detachEvent('on'+eventType, listener);
+            }
         }
     }
 
+    /**
+     * Returns the state of the field with the given id. The state contains
+     * the following properties: value, error
+     * @param fieldId
+     */
     function getFieldState(fieldId) {
         var element = document.getElementById(fieldId) || {};
         var res = {};
         if (element) {
-            if (element.value != undefined) {
-                res.value = element.value;
-                res.error = isFieldError(element);
-            }
-            if (element.disabled != undefined) {
-                res.enabled = !element.disabled;
-            }
+            res.value = element.value;
+            res.error = isFieldError(element);
         }
         return res;
     }
 
+    /**
+     * Sets the state of the field with the given id. The state may contain the following
+     * properties: value, error. Only those properties that are contained in the
+     * given state are applied.
+     * @param fieldId
+     * @param state
+     */
     function setFieldState(fieldId, state) {
         var element = document.getElementById(fieldId);
         if (!element) {
             return;
         }
         if (state.value != undefined) {
-            if (element.value == undefined) {
-                throw new Error("field " + fieldId + " does not support setting a value");
-            }
             element.value = state.value;
         }
         if (state.error != undefined) {
-            if (element.value == undefined) {
-                throw new Error("field " + fieldId + " does not support setting an error");
-            }
             setFieldError(element, state.error);
-        }
-        if (state.enabled != undefined) {
-            if (element.disabled == undefined) {
-                throw new Error("field " + fieldId + " does not support setting the enabled flag");
-            }
-            element.disabled = !state.enabled;
         }
     }
 
@@ -88,12 +102,22 @@ function view() {
         return className.indexOf('error') != -1;
     }
 
+    function setButtonEnabled(buttonId, enabled) {
+        var element = document.getElementById(buttonId);
+        if (!element) {
+            return;
+        }
+        element.disabled = !enabled;
+    }
+
     /**
      * Return an object with the public API
      */
     return {
         getFieldState: getFieldState,
         setFieldState: setFieldState,
-        init: init
+        setButtonEnabled: setButtonEnabled,
+        init: init,
+        destroy: destroy
     };
 }

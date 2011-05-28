@@ -10,7 +10,7 @@
 
 
     <properties>
-        <browser>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</browser>
+         <browser>${env.JSTD_BROWSER}</browser>
     </properties>
 
     <build>
@@ -30,23 +30,13 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>run-unit-tests</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <config>${project.basedir}/jstd-unit.conf</config>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>run-end2end-tests</id>
+                        <id>run-tests</id>
                         <phase>integration-test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <config>${project.basedir}/jstd-end2end.conf</config>
+                            <config>${project.basedir}/jstd.conf</config>
                         </configuration>
                     </execution>
                 </executions>

@@ -29,22 +29,22 @@ This is a default maven WAR project. The jetty is configured so that id does an 
 directories `src/main/webapp` and `src/test/webapp`.
 
 
-Unit-Tests are included in the `test` phase,
-end2end tests are included in the `integration-test` phase.
+Tests are executed in the `integration-test` phase, as some of them need a backend for REST calls.
 
 The js-test-driver server can be started via the jstd-server.sh command.
 
-The unit tests resp. end2end tests can be run via the jstd-unit.sh resp jstd-end2end.sh commands.
+The tests can be run via the jstd-client.sh command.
 
 The tests may also be run in the jasmine html runner via the url `http://localhost:8080/js-tdd/SpecRunner.html`
 
 
 Maven-Configuration
 -----------
-Please set a valid path for the `browser` property before running `maven install`.
+Please set the location of the browser(s) that should be used for the js-test-driver tests
+in the envirnoment variable JSTD_BROWSER before running the maven build.
 
 
 Links
 -------------
 
-See Jasmine-UI for a framework to support real end2end tests.
+See Jasmine-UI for a framework to support ui tests.
