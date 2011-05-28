@@ -6,21 +6,18 @@ describe("model", function() {
     });
 
     it('should save a customer and assign an id', function() {
-        var savedCustomer;
+        var savedCustomer = null;
         runs(function() {
-            var customer = {
-                name: 'a',
-                email: 'a@b.c'
-            };
-            m.saveCustomer(customer, function(c) {
-                savedCustomer = c;
-            });
+            m.saveCustomer({ name: 'a',email: 'a@b.c'},
+                    function(customer) {
+                        savedCustomer = customer;
+                    });
         });
         waitsFor(function() {
-            return true && savedCustomer;
-        });
+            return savedCustomer != null;
+        },'server call never completed', 4000);
         runs(function() {
             expect(savedCustomer.id).toBeTruthy();
-        })
+        });
     });
 });
