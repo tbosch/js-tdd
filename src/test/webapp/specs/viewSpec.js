@@ -17,7 +17,7 @@ describe("view", function() {
         $(field).remove();
         $(button).remove();
     });
-    /*
+
     it('should get the field value', function() {
         field.value = 'myval';
         expect(v.getFieldState(fieldId).value).toEqual('myval');
@@ -51,7 +51,7 @@ describe("view", function() {
         v.setButtonEnabled(buttonId, true);
         expect(button.disabled).toBeFalsy();
     });
-    */
+
     it('should call validate on the callback on keyup event for field', function() {
         jasmine.ui.simulate(field, 'keyup');
         expect(c.validate).toHaveBeenCalled();
