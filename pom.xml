@@ -8,13 +8,11 @@
     <description>Testdriven JavaScript Development</description>
     <packaging>war</packaging>
 
-
     <properties>
          <browser>${env.JSTD_BROWSER}</browser>
     </properties>
 
     <build>
-
         <plugins>
             <plugin>
                 <groupId>com.google.jstestdriver</groupId>
@@ -53,8 +51,7 @@
                     <stopPort>9999</stopPort>
                     <webAppConfig>
                         <baseResource implementation="org.mortbay.resource.ResourceCollection">
-                            <resourcesAsCSV>src/main/webapp,src/test/webapp
-                            </resourcesAsCSV>>
+                            <resourcesAsCSV>src/main/webapp,src/test/webapp</resourcesAsCSV>
                         </baseResource>
                     </webAppConfig>
                 </configuration>
@@ -103,12 +100,6 @@
             <name>JsTestDriver Maven Plugin Repository</name>
             <url>http://jstd-maven-plugin.googlecode.com/svn/maven2</url>
         </repository>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -117,4 +108,5 @@
             <url>http://jstd-maven-plugin.googlecode.com/svn/maven2</url>
         </pluginRepository>
     </pluginRepositories>
+
 </project>

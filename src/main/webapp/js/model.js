@@ -31,7 +31,6 @@ function model() {
         sendPOSTRequest(CUSTOMER_URL, customer, callback);
     }
 
-
     // return an object for the public API
     return {
         saveCustomer: saveCustomer
