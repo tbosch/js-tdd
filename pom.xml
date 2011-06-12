@@ -41,18 +41,18 @@
             </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <!-- Note that there is a bug in newer jetty plugin versions, that do no more allow
-                     to configure multiple source directories -->
-                <version>6.1.26</version>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>7.4.2.v20110526</version>
                 <configuration>
                     <scanIntervalSeconds>5</scanIntervalSeconds>
                     <stopKey>STOPJETTY</stopKey>
                     <stopPort>9999</stopPort>
                     <webAppConfig>
-                        <baseResource implementation="org.mortbay.resource.ResourceCollection">
-                            <resourcesAsCSV>src/main/webapp,src/test/webapp</resourcesAsCSV>
-                        </baseResource>
+                        <contextPath>/${project.artifactId}</contextPath>
+                        <resourceBases>
+                            <resourceBase>src/main/webapp</resourceBase>
+                            <resourceBase>src/test/webapp</resourceBase>
+                        </resourceBases>
                     </webAppConfig>
                 </configuration>
                 <executions>
