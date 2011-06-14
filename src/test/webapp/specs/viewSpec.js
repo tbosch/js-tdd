@@ -1,31 +1,32 @@
 describe("view", function() {
-    var v, c, field, fieldId, button, buttonId;
+    var div, v, c, field, fieldId, button, buttonId;
     beforeEach(function() {
-        $("body").append('<input type="text" id="mydata"><button id="save"></button>');
+        div = document.createElement('div');
+        div.innerHTML = '<input type="text" id="someField"><button id="save"></button>';
+        document.getElementsByTagName("body")[0].appendChild(div);
         v = view();
         c = controller({}, v, model());
         spyOn(c, 'validate').andReturn();
         spyOn(c, 'save').andReturn();
         v.init(c)
-        fieldId = 'mydata';
-        field = $('#'+fieldId)[0];
+        fieldId = 'someField';
+        field = document.getElementById(fieldId);
         buttonId = 'save';
-        button = $('#'+buttonId)[0];
+        button = document.getElementById(buttonId);
     });
     afterEach(function() {
         v.destroy();
-        $(field).remove();
-        $(button).remove();
+        div.parentNode.removeChild(div);
     });
 
     it('should get the field value', function() {
-        field.value = 'myval';
-        expect(v.getFieldState(fieldId).value).toEqual('myval');
+        field.value = 'someValue';
+        expect(v.getFieldState(fieldId).value).toEqual('someValue');
     });
 
     it('should set the field value', function() {
-        v.setFieldState(fieldId, {value: 'myval'});
-        expect(field.value).toEqual('myval');
+        v.setFieldState(fieldId, {value: 'someValue'});
+        expect(field.value).toEqual('someValue');
     });
 
     it('should get the error class', function() {

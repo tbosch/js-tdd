@@ -34,7 +34,7 @@ describe("controller", function() {
     });
 
     it('should not mark filled required fields with an error', function() {
-        v.getFieldState.andReturn({value:'myval'});
+        v.getFieldState.andReturn({value:'someValue'});
         var c = controller({name: 'required'}, v, m);
         expect(v.setFieldState).toHaveBeenCalledWith('name', {error: false});
     });
@@ -89,17 +89,17 @@ describe("controller", function() {
     });
 
     it('should save the values to the model', function() {
-        v.getFieldState.andReturn({value:'myval'});
+        v.getFieldState.andReturn({value:'someValue'});
         var c = controller({name: '', surname: ''}, v,m);
         c.save();
         expect(m.saveCustomer).toHaveBeenCalled();
         var customer = m.saveCustomer.mostRecentCall.args[0];
-        expect(customer.name).toEqual('myval');
-        expect(customer.surname).toEqual('myval');
+        expect(customer.name).toEqual('someValue');
+        expect(customer.surname).toEqual('someValue');
     });
 
     it('should set the state during saving', function() {
-        v.getFieldState.andReturn({value:'myval'});
+        v.getFieldState.andReturn({value:'someValue'});
         var c = controller({name: '', surname: ''}, v, m);
         c.save();
         expect(v.setFieldState.mostRecentCall.args).toEqual(['state', {value: 'Speichern...'}]);
